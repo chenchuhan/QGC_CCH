@@ -1,0 +1,16 @@
+[
+{
+    "name":             "userBrandImageIndoor",
+    "shortDescription": "User-selected brand image",
+    "longDescription":  "Location in file system of user-selected brand image (indoor)",
+    "type":             "string",
+    "defaultValue":     ""
+},
+{
+    "name":             "userBrandImageOutdoor",
+    "shortDescription": "User-selected brand image",
+    "longDescription":  "Location in file system of user-selected brand image (outdoor)",
+    "type":             "string",
+    "defaultValue":     ""
+}
+]

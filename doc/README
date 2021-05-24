@@ -1,0 +1,14 @@
+Mac OS X
+========
+To install doxygen and dot: 
+brew install doxygen dot
+
+doxyqml:
+https://github.com/agateau/doxyqml
+$sudo pip3 install doxyqml
+
+Then to generate the html, run the following code while you are in the qgroundcontrol/doc directory:
+$doxygen Doxyfile
+
+The html file index.html should be in doc/html. 
+

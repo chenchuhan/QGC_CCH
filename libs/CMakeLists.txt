@@ -1,0 +1,2 @@
+add_subdirectory(qtandroidserialport)
+add_subdirectory(shapelib)
