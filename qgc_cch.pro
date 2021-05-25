@@ -26,7 +26,8 @@ message(Qt version $$[QT_VERSION])
 
 include(QGCCommon.pri)
 
-TARGET   = QGroundControl
+#TARGET   = QGroundControl
+TARGET   = QGC_CCH041020
 TEMPLATE = app
 QGCROOT  = $$PWD
 
