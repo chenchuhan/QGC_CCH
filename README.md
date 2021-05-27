@@ -3,7 +3,7 @@
 2021年05月27日更新：
 
 更新Mavlink与MockLink的双向通讯，并更新Mavlink库
-CSDN地址：
+CSDN博客地址：https://blog.csdn.net/qq_16504163/article/details/117331814
 
 
 [![Releases](https://img.shields.io/github/release/mavlink/QGroundControl.svg)](https://github.com/mavlink/QGroundControl/releases)
