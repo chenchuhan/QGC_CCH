@@ -185,6 +185,9 @@ Vehicle::Vehicle(LinkInterface*             link,
     , _firmwareVersionType(FIRMWARE_VERSION_TYPE_OFFICIAL)
     , _gitHash(versionNotSetValue)
     , _uid(0)
+    //start_cch_20210527
+    , _rcvByte1(0)
+    , _rcvByte2(0)
     , _lastAnnouncedLowBatteryPercent(100)
     , _priorityLinkCommanded(false)
     , _orbitActive(false)
@@ -865,6 +868,10 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
         _handleWind(message);
         break;
 #endif
+    //start_cch_20210527 [修改]
+    case MAVLINK_MSG_ID_CSDN_TEST:
+        _handleCSDNTestRcv(message);
+        break;
     }
 
     // This must be emitted after the vehicle processes the message. This way the vehicle state is up to date when anyone else
@@ -4238,6 +4245,50 @@ void Vehicle::centerGimbal()
     if(_haveGimbalData) {
         gimbalControlValue(0.0, 0.0);
     }
+}
+
+//start_cch_20210526 [修改3]
+void Vehicle::testSendToVehicle(quint8 byte1, quint8 byte2)
+{
+    mavlink_message_t       msg;
+    mavlink_csdn_test_t     csdn_test_t;
+
+    // Timestamp of the master clock in microseconds since UNIX epoch.
+    // Timestamp of the component clock since boot time in milliseconds (Not necessary).
+
+    csdn_test_t.byte1 = byte1;
+    csdn_test_t.byte2 = byte2;
+
+    qDebug() << "csdn_test_t.byte1" << csdn_test_t.byte1;  //QGC send cmd to xxx
+    qDebug() << "csdn_test_t.byte2" << csdn_test_t.byte2;  //QGC send cmd to xxx
+
+    mavlink_msg_csdn_test_encode_chan(_mavlink->getSystemId(),
+                                  _mavlink->getComponentId(),
+                                  priorityLink()->mavlinkChannel(),
+                                  &msg,
+                                  &csdn_test_t);
+
+    sendMessageOnLink(priorityLink(), msg);
+    //有些版本可用以下方式发送
+    //sendMessageOnLinkThreadSafe(priorityLink(), msg);
+}
+
+//start_cch_20210527
+void Vehicle::_handleCSDNTestRcv(mavlink_message_t& message)
+{
+
+    mavlink_csdn_test_t csdn_test_t;
+
+    mavlink_msg_csdn_test_decode(&message, &csdn_test_t);
+
+    _rcvByte1 = csdn_test_t.byte1;
+    _rcvByte2 = csdn_test_t.byte2;
+
+    emit rcvByte1Changed(_rcvByte1);
+    emit rcvByte2Changed(_rcvByte2);
+
+//    qDebug() << "[Vehicle] Rcv RcvByte1:" << _rcvByte1;
+//    qDebug() << "[Vehicle] Rcv RcvByte2:" << _rcvByte2;
 }
 
 void Vehicle::_handleGimbalOrientation(const mavlink_message_t& message)

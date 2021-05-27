@@ -81,6 +81,9 @@ MockLink::MockLink(SharedLinkConfigurationPointer& config)
     , _logDownloadCurrentOffset             (0)
     , _logDownloadBytesRemaining            (0)
     , _adsbAngle                            (0)
+    //start_cch_20210527 初始化
+    , _testByte1                            (0)
+    , _testByte2                            (0)
 {
     MockConfiguration* mockConfig = qobject_cast<MockConfiguration*>(_config.data());
     _firmwareType = mockConfig->firmwareType();
@@ -179,6 +182,10 @@ void MockLink::_run1HzTasks(void)
             _sendVibration();
             _sendSysStatus();
             _sendADSBVehicles();
+
+            //start_cch_20210526 [修改n]
+            _sendCSDNTest();
+
             if (!qgcApp()->runningUnitTests()) {
                 // Sending RC Channels during unit test breaks RC tests which does it's own RC simulation
                 _sendRCChannels();
@@ -505,6 +512,10 @@ void MockLink::_handleIncomingMavlinkBytes(const uint8_t* bytes, int cBytes)
             _handleLogRequestData(msg);
             break;
 
+        //start_cch_20210527//修改n
+        case MAVLINK_MSG_ID_CSDN_TEST:
+            _handleCSDNTest(msg);
+            break;
         default:
             break;
         }
@@ -535,6 +546,38 @@ void MockLink::_handleManualControl(const mavlink_message_t& msg)
 
     qCDebug(MockLinkLog) << "MANUAL_CONTROL" << manualControl.x << manualControl.y << manualControl.z << manualControl.r;
 }
+
+//start_cch_20210526 [修改n]
+void MockLink::_handleCSDNTest(const mavlink_message_t& msg)
+{
+    mavlink_csdn_test_t csdn_test_t;
+
+    mavlink_msg_csdn_test_decode(&msg, &csdn_test_t);
+
+    qDebug() << "[MockLink] Rcv byte1: " << csdn_test_t.byte1;
+    qDebug() << "[MockLink] Rcv byte2: " << csdn_test_t.byte2;
+}
+
+//start_cch_20210526 [修改]
+void MockLink::_sendCSDNTest(void)
+{
+    mavlink_message_t   msg;
+
+    _testByte1++;
+    _testByte2--;
+
+
+    mavlink_msg_csdn_test_pack_chan(_vehicleSystemId,
+                                    _vehicleComponentId,
+                                    _mavlinkChannel,
+                                    &msg,
+                                    _testByte1,        // MAV_TYPE
+                                    _testByte2      // MAV_AUTOPILOT
+                                    );
+
+    respondWithMavlinkMessage(msg);
+}
+
 
 void MockLink::_setParamFloatUnionIntoMap(int componentId, const QString& paramName, float paramFloat)
 {

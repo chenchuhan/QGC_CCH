@@ -724,6 +724,8 @@ Item {
             color:              qgcPal.window
             visible:            false
         }
+
+
     }
 
     //-- Airspace Indicator
@@ -806,4 +808,186 @@ Item {
         }
     }
 
+    ////start_cch_20210526 [修改1 ui显示]
+    //自定义UI 发送设置
+    Rectangle {
+        id:                         sendRect
+        anchors.top:                parent.top
+        anchors.topMargin:          20
+        anchors.horizontalCenter:   parent.horizontalCenter
+        height:                     col.height * 1.1
+        width:                      col.width * 1.1
+        radius:                     2
+        color:                      "black"
+
+        Column {
+            id:                     col
+            spacing:                4
+//            anchors.margins:        8
+            anchors.centerIn:       parent
+
+
+
+            QGCLabel {
+                anchors.horizontalCenter:   parent.horizontalCenter
+//                wrapMode:                   Text.WordWrap
+                text:                       "Mavlink 发送测试！"
+                font.pointSize:             12
+                font.bold:                  true
+                color:                      "red"
+            }
+
+            Row {
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                QGCLabel {
+                    id:                         tipsLabel
+                    anchors.verticalCenter:     protectTextField1.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       qsTr("第一个字节：")
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+//                    Layout.fillWidth:           true
+                }
+                //保护距离的输入
+                QGCTextField {
+                    id:                         protectTextField1
+                    width:                      parent.width - parent.spacing - tipsLabel.width
+                    height:                     tipsLabel.implicitHeight * 1.5
+                    text:                       "1"
+                    inputMethodHints:           Qt.ImhFormattedNumbersOnly
+                    focus:                      true
+                    onEditingFinished: {
+                        if(text > 256) {
+                            text = 256
+                            mainWindow.showMessageDialog(qsTr("警告"), qsTr("输入必须小于等于256"))
+                        }
+                        else if(text < 0) {
+                            text = 0
+                            mainWindow.showMessageDialog(qsTr("警告"), qsTr("输入必须大于等于0"))
+                        }
+                    }
+                }
+            }
+
+            Row {
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                QGCLabel {
+                    id:                         tipsLabel2
+                    anchors.verticalCenter:     protectTextField2.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       qsTr("第二个字节：")
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+//                    Layout.fillWidth:           true
+                }
+                //保护距离的输入
+                QGCTextField {
+                    id:                         protectTextField2
+                    width:                      parent.width - parent.spacing - tipsLabel2.width
+                    height:                     tipsLabel2.implicitHeight * 1.5
+                    text:                       "1"
+                    inputMethodHints:           Qt.ImhFormattedNumbersOnly
+                    focus:                      true
+                    onEditingFinished: {
+                        if(text > 256) {
+                            text = 256
+                            mainWindow.showMessageDialog(qsTr("警告"), qsTr("输入必须小于等于256"))
+                        }
+                        else if(text < 0) {
+                            text = 0
+                            mainWindow.showMessageDialog(qsTr("警告"), qsTr("输入必须大于等于0"))
+                        }
+                    }
+                }
+            }
+
+            QGCButton {
+                id:                             mavTestButton
+//                width:                          parent.width
+                backRadius:                     height/2
+                text:                           qsTr("MAVLINK消息发送测试")
+                enabled:                        activeVehicle
+                onClicked: {
+                    if(activeVehicle)
+                        activeVehicle.testSendToVehicle(protectTextField1.text, protectTextField2.text)
+                }
+            }
+        }
+    }
+
+    //自定义UI 接收设置
+    Rectangle {
+        anchors.top:                sendRect.bottom
+        anchors.topMargin:          20
+        anchors.horizontalCenter:   parent.horizontalCenter
+        height:                     colSendRect.height * 1.2
+        width:                      colSendRect.width * 1.2
+        radius:                     2
+        color:                      "black"
+
+        Column {
+            id:                     colSendRect
+            spacing:                4
+            anchors.centerIn:       parent
+
+            QGCLabel {
+                anchors.horizontalCenter:   parent.horizontalCenter
+//                wrapMode:                   Text.WordWrap
+                text:                       "Mavlink 接收测试！"
+                font.pointSize:             12
+                font.bold:                  true
+                color:                      "red"
+            }
+
+            Row {
+                id:                 row1
+                anchors.horizontalCenter: parent.horizontalCenter
+                height:                       label1.height
+                QGCLabel {
+                    id:                       label1
+                    anchors.verticalCenter:   parent.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       qsTr("接收的第一个字节：")
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+                }
+                QGCLabel {
+                    anchors.verticalCenter:     parent.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       activeVehicle ? activeVehicle.rcvByte1 : ""
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+                }
+            }
+
+            Row {
+                anchors.left:                   row1.left
+                height:                         label2.height
+
+                QGCLabel {
+                    id:                         label2
+                    anchors.verticalCenter:     parent.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       qsTr("接收的第二个字节：")
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+                }
+                QGCLabel {
+                    anchors.verticalCenter:     parent.verticalCenter
+//                    wrapMode:                   Text.WordWrap
+                    text:                       activeVehicle ? activeVehicle.rcvByte2 : ""
+                    font.pointSize:             11
+                    font.bold:                  true
+                    color:                      "#B7FF4A"
+                }
+            }
+        }
+    }
 }

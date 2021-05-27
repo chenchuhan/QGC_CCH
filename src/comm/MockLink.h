@@ -205,6 +205,10 @@ private:
     void _sendADSBVehicles(void);
     void _moveADSBVehicle(void);
 
+    //start_cch_20210526 [修改4]
+    void _handleCSDNTest(const mavlink_message_t& msg);
+    void _sendCSDNTest(void);
+
     static MockLink* _startMockLinkWorker(QString configName, MAV_AUTOPILOT firmwareType, MAV_TYPE vehicleType, bool sendStatusText, MockConfiguration::FailureMode_t failureMode);
     static MockLink* _startMockLink(MockConfiguration* mockConfig);
 
@@ -257,6 +261,11 @@ private:
 
     QGeoCoordinate  _adsbVehicleCoordinate;
     double          _adsbAngle;
+
+    //start_cch_20210527
+    uint8_t  _testByte1;
+    uint8_t  _testByte2;
+
 
     static double       _defaultVehicleLatitude;
     static double       _defaultVehicleLongitude;

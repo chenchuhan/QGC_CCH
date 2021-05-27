@@ -1490,6 +1490,11 @@
       <field type="float" name="rpm1">RPM Sensor1.</field>
       <field type="float" name="rpm2">RPM Sensor2.</field>
     </message>
+	<message id="236" name="CSDN_TEST">
+      <description>CSDN TEST.</description>
+      <field type="uint8_t" name="byte1">FRIST BYTE.</field>
+      <field type="uint8_t" name="byte2">SECOND BYTE.</field>
+    </message>
     <!-- ardupilot specific mavlink2 messages starting at 11000-->
     <message id="11000" name="DEVICE_OP_READ">
       <description>Read registers for a device.</description>

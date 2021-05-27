@@ -696,6 +696,12 @@ public:
     Q_PROPERTY(quint64  vehicleUID                  READ vehicleUID                 NOTIFY vehicleUIDChanged)
     Q_PROPERTY(QString  vehicleUIDStr               READ vehicleUIDStr              NOTIFY vehicleUIDChanged)
 
+    //start_cch_20210527
+    Q_PROPERTY(quint8  rcvByte1                  READ rcvByte1                      NOTIFY rcvByte1Changed)
+    Q_PROPERTY(quint8  rcvByte2                  READ rcvByte2                      NOTIFY rcvByte2Changed)
+
+    //end_cch_20210527
+
     /// Resets link status counters
     Q_INVOKABLE void resetCounters  ();
 
@@ -780,6 +786,9 @@ public:
 #if !defined(NO_ARDUPILOT_DIALECT)
     Q_INVOKABLE void flashBootloader();
 #endif
+
+    //start_cch_20210526 [修改2]
+    Q_INVOKABLE void testSendToVehicle(quint8 byte1, quint8 byte2);
 
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
@@ -880,6 +889,10 @@ public:
     bool supportsTerrainFrame           () const;
 
     void setGuidedMode(bool guidedMode);
+
+    //start_cch_20210527
+//    void setRcvByte1(quint8 rcvByte1);
+//    void setRcvByte2(quint8 rcvByte2);
 
     QString prearmError() const { return _prearmError; }
     void setPrearmError(const QString& prearmError);
@@ -1117,6 +1130,12 @@ public:
     CheckList   checkListState          () { return _checkListState; }
     void        setCheckListState       (CheckList cl)  { _checkListState = cl; emit checkListStateChanged(); }
 
+    //start_cch_20210527
+    quint8     rcvByte1              () { return _rcvByte1; }
+    quint8     rcvByte2              () { return _rcvByte2; }
+
+
+
 public slots:
     void setVtolInFwdFlight             (bool vtolInFwdFlight);
 
@@ -1197,6 +1216,13 @@ signals:
     void firmwareCustomVersionChanged   ();
     void gitHashChanged                 (QString hash);
     void vehicleUIDChanged              ();
+
+
+    //start_cch_20210527
+    void rcvByte1Changed              (quint8 rcvByte1);
+    void rcvByte2Changed              (quint8 rcvByte2);
+
+
 
     /// New RC channel values
     ///     @param channelCount Number of available channels, cMaxRcChannels max
@@ -1346,6 +1372,9 @@ private:
     void _writeCsvLine                  ();
     void _flightTimerStart              ();
     void _flightTimerStop               ();
+
+    //start_cch_20210526 []
+    void _handleCSDNTestRcv(mavlink_message_t& message);
 
     int     _id;                    ///< Mavlink system id
     int     _defaultComponentId;
@@ -1519,6 +1548,10 @@ private:
 
     QString _gitHash;
     quint64 _uid;
+
+    //start_cch_20210527
+    quint8            _rcvByte1;
+    quint8            _rcvByte2;
 
     QTime   _lastBatteryAnnouncement;
     int     _lastAnnouncedLowBatteryPercent;

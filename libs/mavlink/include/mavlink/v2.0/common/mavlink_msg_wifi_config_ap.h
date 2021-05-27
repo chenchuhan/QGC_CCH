@@ -3,11 +3,11 @@
 
 #define MAVLINK_MSG_ID_WIFI_CONFIG_AP 299
 
-MAVPACKED(
+
 typedef struct __mavlink_wifi_config_ap_t {
  char ssid[32]; /*<  Name of Wi-Fi network (SSID). Leave it blank to leave it unchanged.*/
  char password[64]; /*<  Password. Leave it blank for an open AP.*/
-}) mavlink_wifi_config_ap_t;
+} mavlink_wifi_config_ap_t;
 
 #define MAVLINK_MSG_ID_WIFI_CONFIG_AP_LEN 96
 #define MAVLINK_MSG_ID_WIFI_CONFIG_AP_MIN_LEN 96

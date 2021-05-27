@@ -3,7 +3,7 @@
 
 #define MAVLINK_MSG_ID_MAG_CAL_REPORT 192
 
-MAVPACKED(
+
 typedef struct __mavlink_mag_cal_report_t {
  float fitness; /*< [mgauss] RMS milligauss residuals.*/
  float ofs_x; /*<  X offset.*/
@@ -22,7 +22,7 @@ typedef struct __mavlink_mag_cal_report_t {
  float orientation_confidence; /*<  Confidence in orientation (higher is better).*/
  uint8_t old_orientation; /*<  orientation before calibration.*/
  uint8_t new_orientation; /*<  orientation after calibration.*/
-}) mavlink_mag_cal_report_t;
+} mavlink_mag_cal_report_t;
 
 #define MAVLINK_MSG_ID_MAG_CAL_REPORT_LEN 50
 #define MAVLINK_MSG_ID_MAG_CAL_REPORT_MIN_LEN 44
